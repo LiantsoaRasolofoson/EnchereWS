@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.sql.Time;
-
 import javax.persistence.*;
 
 
@@ -46,7 +44,7 @@ public class Enchere {
     private int idCategorie;
 
     @Column(name = "dateenchere")
-    private Date dateEnchere;
+    private LocalDateTime dateEnchere;
 
     @Column(name = "duree")
     private Time duree;
