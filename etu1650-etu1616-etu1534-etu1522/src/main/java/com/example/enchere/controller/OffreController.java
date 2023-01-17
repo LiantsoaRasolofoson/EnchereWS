@@ -1,28 +1,22 @@
 package com.example.enchere.controller;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.example.enchere.exeption.RessourceException;
 import com.example.enchere.modele.Compte;
 import com.example.enchere.modele.Enchere;
 import com.example.enchere.modele.Offre;
 import com.example.enchere.repository.CompteRepository;
 import com.example.enchere.repository.EnchereRepository;
 import com.example.enchere.repository.OffreRepository;
-import com.example.enchere.retour.ErrorRetour;
 import com.example.enchere.retour.SuccessRetour;
 
 @CrossOrigin("*")
@@ -64,7 +58,7 @@ public class OffreController {
     public @ResponseBody Map<String, Object> createAvion(@RequestBody Offre offre) throws Exception{
         try{
             Offre max = offreRepository.getOffreMax(offre.getIdEnchere());
-            offre.setDateOffre(Timestamp.valueOf(LocalDateTime.now()));
+            offre.setDateOffre(LocalDateTime.now());
             saveOffreUser(max, offre);
             if( max != null ){
                 updateLastOffre(max);

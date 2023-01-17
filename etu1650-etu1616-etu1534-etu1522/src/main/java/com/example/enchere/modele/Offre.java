@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.*;
 
@@ -38,7 +37,7 @@ public class Offre {
     private double prixOffre;
 
     @Column(name = "dateoffre")
-    private Timestamp dateOffre;
+    private LocalDateTime dateOffre;
 
     public void checkUser(Enchere enchere)throws Exception{
         if( enchere.getIdUtilisateur() == this.getIdUtilisateur() ){

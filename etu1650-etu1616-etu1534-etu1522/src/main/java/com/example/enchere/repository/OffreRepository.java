@@ -2,8 +2,6 @@ package com.example.enchere.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
-import com.example.enchere.modele.Enchere;
 import com.example.enchere.modele.Offre;
 
 public interface OffreRepository extends JpaRepository<Offre, Integer> {
