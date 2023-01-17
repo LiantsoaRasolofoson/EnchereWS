@@ -1,0 +1,27 @@
+db.HistoriqueEnchere.insert(
+    {
+        "enchere" : {
+            "idEnchere" : 1,
+            "nom" : "Vase",
+            "descriptions" : "En porceline venant d'Afrique",
+            "prixEnchere" : 100000,
+            "idUtilisateur" : 1,
+            "idCommission" : 1,
+            "idCategorie" : 2,
+            "dateEnchere" : "2023-01-13T15:00:00",
+            "duree" : "02:00:00",
+            "categorie" : "decoration",
+            "taux" : 10,
+            "statusEnchere" : "Non-Vendu",
+            "nomVendeur" : "Rakoto",
+            "prenomVendeur" : "Fara"
+        },
+        "offre" : {
+            "idOffre" : 1,
+            "idEnchere" : 1,
+            "idUtilisateur" : 2,
+            "prixOffre" : 120000,
+            "dateOffre" : "2023-01-13T15:15:00"
+        }
+    }
+)
