@@ -17,8 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.enchere.exeption.RessourceException;
 import com.example.enchere.modele.Condition;
+import com.example.enchere.modele.Enchere;
+import com.example.enchere.modele.ImageEnchere;
 import com.example.enchere.modele.Status;
 import com.example.enchere.modele.V_Enchere;
+import com.example.enchere.repository.HistoriqueEnchereRepository;
+import com.example.enchere.repository.ImageEnchereRepository;
 import com.example.enchere.repository.V_EnchereRepository;
 import com.example.enchere.retour.ErrorRetour;
 
@@ -28,7 +32,13 @@ import com.example.enchere.retour.ErrorRetour;
 public class EnchereController {
 
     @Autowired
+    private HistoriqueEnchereRepository historiqueEnchereRepository;
+
+    @Autowired
     private V_EnchereRepository v_enchereRepository;
+
+    @Autowired
+    private ImageEnchereRepository imageEnchereRepository;
 
     V_Enchere v = new V_Enchere();
 
@@ -39,6 +49,18 @@ public class EnchereController {
         new Status(4,"Non-Vendu")
     };
 
+    public void insertionImage(Enchere enchere, ImageEnchere [] images){
+        try{
+            for(int i=0; i<images.length; i++){
+                images[i].setIdEnchere(enchere.getIdEnchere());
+                imageEnchereRepository.save(images[i]);
+            }
+        }
+        catch(Exception e){
+            throw new RessourceException(new ErrorRetour("Insertion Image : "+e.getMessage(),HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
     @PostMapping("/recherches")
     public @ResponseBody Map<String, Object> recherches(@RequestBody Condition condition ){
         try{
@@ -46,6 +68,18 @@ public class EnchereController {
             Map<String, Object> data = new HashMap<String, Object>();
             List <V_Enchere> liste = v.getAll(c);
             data.put("data", liste);
+            return data;
+        }
+        catch(Exception e){
+            throw new RessourceException(new ErrorRetour(e.getMessage(),HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
+    @GetMapping("{idEnchere}")
+    public @ResponseBody Map<String, Object> historiques(@PathVariable int idEnchere){
+        try{
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("data",historiqueEnchereRepository.getHistoriques(idEnchere));
             return data;
         }
         catch(Exception e){

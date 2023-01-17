@@ -28,5 +28,5 @@ public class ImageEnchere {
     private String format;
 
     @Column(name = "idenchere")
-    private String idEnchere;
+    private int idEnchere;
 }
