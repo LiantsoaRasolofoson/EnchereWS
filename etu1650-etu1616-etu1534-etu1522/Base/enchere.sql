@@ -4,6 +4,16 @@ alter database enchere owner to enchere;
 
 --creation table
 
+CREATE TABLE Token(
+  idToken SERIAL NOT NULL,
+  idUtilisateur int4,
+  tokenValues varchar(255),
+  dateExpiration timestamp
+);
+
+ALTER TABLE Token ADD FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur(idUtilisateur);
+
+
 CREATE TABLE Genre (
   idGenre SERIAL NOT NULL, 
   valeur  varchar(255) NOT NULL,
