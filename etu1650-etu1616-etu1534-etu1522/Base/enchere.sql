@@ -84,6 +84,7 @@ CREATE TABLE Offre (
 );
 
 CREATE TABLE Admins (
+  idAdmins       SERIAL NOT NULL,
   nom        varchar(255) NOT NULL, 
   prenom     varchar(255) NOT NULL, 
   email      varchar(255) NOT NULL, 
