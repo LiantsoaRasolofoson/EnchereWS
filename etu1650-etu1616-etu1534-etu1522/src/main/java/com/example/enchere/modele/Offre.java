@@ -39,7 +39,7 @@ public class Offre {
     @Column(name = "dateoffre")
     private LocalDateTime dateOffre;
 
-    public void checkUser(Enchere enchere)throws Exception{
+    public void checkUser(V_Enchere enchere)throws Exception{
         if( enchere.getIdUtilisateur() == this.getIdUtilisateur() ){
             throw new RessourceException(new ErrorRetour("Vous ne pouvez pas enchérir sur votre enchère",HttpStatus.BAD_REQUEST.value()));
         }
@@ -51,8 +51,8 @@ public class Offre {
         }
     }
 
-    public void checkMontant(Enchere enchere)throws Exception{
-        if( enchere.getPrixEnchere() >= this.prixOffre ){
+    public void checkMontant(V_Enchere enchere)throws Exception{
+        if( enchere.getPrixEnchere() > this.prixOffre ){
             throw new RessourceException(new ErrorRetour("Vous devez entrer un montant supérieur ou égal à "+enchere.getPrixEnchere()+" Ar",HttpStatus.BAD_REQUEST.value()));
         }
     }

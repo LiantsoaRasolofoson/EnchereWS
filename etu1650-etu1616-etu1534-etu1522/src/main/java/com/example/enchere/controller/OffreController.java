@@ -5,18 +5,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.enchere.exeption.RessourceException;
 import com.example.enchere.modele.Compte;
-import com.example.enchere.modele.Enchere;
+import com.example.enchere.modele.HistoriqueEnchere;
 import com.example.enchere.modele.Offre;
+import com.example.enchere.modele.Utilisateur;
+import com.example.enchere.modele.V_Enchere;
 import com.example.enchere.repository.CompteRepository;
-import com.example.enchere.repository.EnchereRepository;
+import com.example.enchere.repository.HistoriqueEnchereRepository;
 import com.example.enchere.repository.OffreRepository;
+import com.example.enchere.repository.UtilisateurRepository;
+import com.example.enchere.repository.V_EnchereRepository;
+import com.example.enchere.retour.ErrorRetour;
 import com.example.enchere.retour.SuccessRetour;
 
 @CrossOrigin("*")
@@ -28,13 +36,29 @@ public class OffreController {
     private CompteRepository compteRepository;
 
     @Autowired
-    private EnchereRepository enchereRepository;
-
-    @Autowired
     private OffreRepository offreRepository;
 
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
+
+    @Autowired
+    private V_EnchereRepository v_enchereRepository;
+
+    @Autowired
+    private HistoriqueEnchereRepository historiqueEnchereRepository;
+
+    public HistoriqueEnchere gHistoriqueEnchere(Offre offre, Utilisateur utilisateur){
+        HistoriqueEnchere he = new HistoriqueEnchere();
+        he.setIdEnchere(offre.getIdEnchere());
+        he.setIdOffre(offre.getIdOffre());
+        he.setPrixOffre(offre.getPrixOffre());
+        he.setDateOffre(offre.getDateOffre());
+        he.setUtilisateur(utilisateur);
+        return he;
+    }
+
     public void saveOffreUser(Offre max, Offre offre)throws Exception{
-        Enchere enchere = enchereRepository.getEnchere(offre.getIdEnchere());
+        V_Enchere enchere = v_enchereRepository.getEnchere(offre.getIdEnchere());
         offre.checkUser(enchere);
         if( max != null ){
             offre.checkMontant(max);
@@ -42,10 +66,16 @@ public class OffreController {
         else{
             offre.checkMontant(enchere);
         }
+        Utilisateur utilisateur = utilisateurRepository.findById(offre.getIdUtilisateur()).orElseThrow(() 
+            -> new RessourceException(new ErrorRetour("Le idUtilisateur : "+offre.getIdUtilisateur()+" n'existe pas",HttpStatus.NO_CONTENT.value()))
+        );
         Compte userCompte = compteRepository.getCompte(offre.getIdUtilisateur());
         userCompte.checkSolde(offre.getPrixOffre());
+        offre.setDateOffre(LocalDateTime.now());
         compteRepository.save(userCompte);
         offreRepository.save(offre);
+        HistoriqueEnchere he = this.gHistoriqueEnchere(offre, utilisateur);
+        historiqueEnchereRepository.save(he);
     }
 
     public void updateLastOffre(Offre max)throws Exception{
@@ -54,8 +84,8 @@ public class OffreController {
         compteRepository.save(last);
     }
 
-    @PostMapping
-    public @ResponseBody Map<String, Object> createAvion(@RequestBody Offre offre) throws Exception{
+    @PostMapping("/rencherir")
+    public @ResponseBody Map<String, Object> rencherir(@RequestBody Offre offre) throws Exception{
         try{
             Offre max = offreRepository.getOffreMax(offre.getIdEnchere());
             offre.setDateOffre(LocalDateTime.now());
@@ -71,6 +101,4 @@ public class OffreController {
             throw e;
         }
     }
-
-   
 }

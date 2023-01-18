@@ -13,4 +13,7 @@ public interface V_EnchereRepository extends JpaRepository<V_Enchere, Integer> {
     
     @Query(value = "SELECT * FROM V_Enchere WHERE idUtilisateur = ?1", nativeQuery = true)
     List<V_Enchere> getAll(int idUtilisateur);
+
+    @Query(value = "SELECT * FROM V_Enchere WHERE idEnchere = ?1", nativeQuery = true)
+    V_Enchere getEnchere(int idEnchere);
 }

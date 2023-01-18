@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -14,8 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
-
+@Table(name = "utilisateur")
 public class Utilisateur {
 
     @Id
@@ -35,11 +34,14 @@ public class Utilisateur {
     @Column(name = "motdepasse")
     private String motDePasse;
 
+    @Column(name = "contact")
+    private String contact;
+
     @Column(name = "adresse")
     private String adresse;
 
     @Column(name = "idgenre")
-    private String idGenre;
+    private int idGenre;
 
     @Column(name = "datedenaissance")
     private Date dateDeNaissance;   

@@ -16,7 +16,7 @@ CREATE TABLE Utilisateur (
   prenom        varchar(255) NOT NULL, 
   email         varchar(255) NOT NULL, 
   motDePasse    varchar(255) NOT NULL, 
-  contact       int4 NOT NULL, 
+  contact       varchar(255) NOT NULL, 
   adresse       varchar(255) NOT NULL, 
   idGenre       int4 NOT NULL, 
   dateDeNaissance date not null,
