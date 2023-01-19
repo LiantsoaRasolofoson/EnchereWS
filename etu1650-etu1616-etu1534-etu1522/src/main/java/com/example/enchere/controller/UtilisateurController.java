@@ -43,9 +43,24 @@ public class UtilisateurController {
             tokenRepository.save(t);
             Map<String, Object> data = new HashMap<String, Object>();
             Token token = tokenRepository.getTokenByUserNotExpired(user.getIdUtilisateur());
-            data.put("data", new SuccessRetour("Vous êtes bien connectée "+user.getNom()));
             data.put("token", token);
             return data;
+        }
+    }
+
+    @PostMapping("/inscription")
+    public @ResponseBody Map<String, Object> inscription(@RequestBody Utilisateur utilisateur) throws Exception {
+        try{
+            Map<String, Object> data = new HashMap<String, Object>();
+            utilisateur = utilisateurRepository.save(utilisateur);
+            Token t = new Token().generateToken(utilisateur,1);
+            tokenRepository.save(t);
+            Token token = tokenRepository.getTokenByUserNotExpired(utilisateur.getIdUtilisateur());
+            data.put("token", token);
+            return data;
+        }
+        catch(Exception e){
+            throw new RessourceException(new ErrorRetour("Inscription : "+e.getMessage(),HttpStatus.NOT_FOUND.value()));
         }
     }
 
@@ -64,5 +79,6 @@ public class UtilisateurController {
         }
     }
 
+    
     
 }

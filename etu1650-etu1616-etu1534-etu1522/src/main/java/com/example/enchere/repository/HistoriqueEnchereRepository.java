@@ -11,6 +11,6 @@ import com.example.enchere.modele.HistoriqueEnchere;
 @Repository
 public interface HistoriqueEnchereRepository extends MongoRepository<HistoriqueEnchere, String>{
     
-    @Query("{'offre.idEnchere' : ?0}")
+    @Query("{'idEnchere' : ?0}")
     List<HistoriqueEnchere> getHistoriques(int idEnchere);
 }

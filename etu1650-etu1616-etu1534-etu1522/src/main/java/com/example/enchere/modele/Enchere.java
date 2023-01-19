@@ -31,9 +31,6 @@ public class Enchere {
     @Column(name = "prixenchere")
     private double prixEnchere;
 
-    @Column(name = "prixmin")
-    private double prixMin;
-
     @Column(name = "idutilisateur")
     private int idUtilisateur;
 
@@ -49,4 +46,10 @@ public class Enchere {
     @Column(name = "duree")
     private Time duree;
 
+    public boolean isTerminated(){
+        if( this.dateEnchere == LocalDateTime.now() ){
+            return true;
+        }
+        return false;
+    }
 }
