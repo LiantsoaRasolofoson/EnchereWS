@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
-
 import javax.persistence.*;
 
 @Getter
@@ -19,7 +17,7 @@ public class Admins {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idadmin")
+    @Column(name = "idadmins")
     private int idAdmins;
 
     @Column(name = "nom")

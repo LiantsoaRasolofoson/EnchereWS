@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 import javax.persistence.*;
@@ -16,8 +15,6 @@ import org.springframework.http.HttpStatus;
 
 import com.example.enchere.exeption.RessourceException;
 import com.example.enchere.retour.ErrorRetour;
-
-import ch.qos.logback.classic.pattern.Util;
 
 @Getter
 @Setter

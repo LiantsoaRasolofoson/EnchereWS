@@ -24,10 +24,7 @@ public class Status {
             value = "En Cours";
         }
         if( id == 3 ){
-            value = "Vendu";
-        }
-        if( id == 4 ){
-            value = "Non-Vendu";
+            value = "Termine";
         }
         return value;
     }

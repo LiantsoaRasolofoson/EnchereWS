@@ -18,6 +18,7 @@ import javax.persistence.*;
 public class Rechargement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idrechargement")
     private int idRechargement;
 
     @Column(name = "idcompte")

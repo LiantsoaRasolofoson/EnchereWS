@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,10 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.enchere.exeption.RessourceException;
 import com.example.enchere.modele.Compte;
+import com.example.enchere.modele.Rechargement;
 import com.example.enchere.modele.RechargementValide;
+import com.example.enchere.modele.Token;
 import com.example.enchere.modele.V_Rechargement;
 import com.example.enchere.repository.CompteRepository;
+import com.example.enchere.repository.RechargementRepository;
 import com.example.enchere.repository.RechargementValideRepository;
+import com.example.enchere.repository.TokenRepository;
 import com.example.enchere.repository.V_RechargementRepository;
 import com.example.enchere.retour.ErrorRetour;
 
@@ -35,12 +42,23 @@ public class V_RechargementController {
     private V_RechargementRepository v_rechargementRepository;
 
     @Autowired
+    private RechargementRepository rechargementRepository;
+
+    @Autowired
     private RechargementValideRepository rechargementValideRepository;
 
     @Autowired
     private CompteRepository compteRepository;
 
-    @GetMapping
+    @Autowired
+    private TokenRepository tokenRepository;
+
+    public void isTokenExipered(String tokenValues)throws Exception{
+        Token token = tokenRepository.getToken(tokenValues);
+        token.bearerToken(token);
+    }
+
+    @GetMapping("/listeNonValide")
     public @ResponseBody Map<String, Object> nonValides() {
         try{
             Map<String, Object> data = new HashMap<String, Object>();
@@ -57,24 +75,45 @@ public class V_RechargementController {
         }
     }
 
-    @PutMapping
-    public @ResponseBody Map<String, Object> confirmeRechargement(@RequestParam("idRechargement") int idRechargement, @RequestParam("idCompte") int idCompte, @RequestParam("montant") double montant) {
+    @PutMapping("validationRechargement")
+    public @ResponseBody Map<String, Object> confirmeRechargement(@RequestParam("idRechargement") int idRechargement) {
         try{
-            Compte compte = compteRepository.findById(idCompte).get();
-            double nouveauSolde = compte.getSolde() + montant;
+            Rechargement rg = rechargementRepository.findById(idRechargement).get();
+            Compte compte = compteRepository.findById(rg.getIdCompte()).get();
+            double nouveauSolde = compte.getSolde() + rg.getMontant();
             compte.setSolde(nouveauSolde);
             compteRepository.save(compte);
-            
             Date dateValidation = Date.valueOf(LocalDate.now());
             RechargementValide rv = new RechargementValide(idRechargement, dateValidation);
             rechargementValideRepository.save(rv);
-
             Map<String, Object> data = new HashMap<String, Object>();
             data.put("data", "Confirmation réussie, rechargement validé");
             return data;
         }
         catch(Exception e){
             throw new RessourceException(new ErrorRetour("Erreur de la confirmation",HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
+
+    @PostMapping("/rechargement/{idUtilisateur}/{tokenValues}")
+    public @ResponseBody Map<String, Object> rechargement(@RequestBody Rechargement rechargement, @PathVariable int idUtilisateur, @PathVariable String tokenValues) throws Exception{
+        try{
+            isTokenExipered(tokenValues);
+            Compte compte = compteRepository.getCompte(idUtilisateur);
+            rechargement.setIdCompte(compte.getIdCompte());
+            rechargement.setDateRechargement(Date.valueOf(LocalDate.now()));
+            Map<String, Object> data = new HashMap<String, Object>();
+            if( rechargement.getMontant() > 0 ){
+                data.put("data", rechargementRepository.save(rechargement));
+            }
+            else{
+                throw new RessourceException(new ErrorRetour("Montant Invalide",HttpStatus.BAD_REQUEST.value()));
+            }
+            return data;
+        }
+        catch(Exception e){
+            throw e;
         }
     }
 }

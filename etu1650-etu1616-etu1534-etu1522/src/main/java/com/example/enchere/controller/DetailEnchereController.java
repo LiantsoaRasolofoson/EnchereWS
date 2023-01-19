@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.enchere.exeption.RessourceException;
-import com.example.enchere.modele.DetailEnchere;
-import com.example.enchere.repository.DetailEnchereRepository;
+import com.example.enchere.modele.ImageEnchere;
+import com.example.enchere.modele.V_Enchere;
+import com.example.enchere.repository.ImageEnchereRepository;
+import com.example.enchere.repository.V_EnchereRepository;
 import com.example.enchere.retour.ErrorRetour;
 
 @CrossOrigin("*")
@@ -24,34 +26,24 @@ import com.example.enchere.retour.ErrorRetour;
 public class DetailEnchereController {
 
     @Autowired
-    private DetailEnchereRepository detailRepository;
+    private V_EnchereRepository v_enchereRepository;
 
+    @Autowired
+    private ImageEnchereRepository imageEnchereRepository;
+    
     @GetMapping("{idenchere}")
     public @ResponseBody Map<String, Object> getDetailEnchereById(@PathVariable int idenchere){
         try{
             Map<String, Object> data = new HashMap<String, Object>();
-            List<DetailEnchere> liste = detailRepository.getDetailEnchereById(idenchere);
-            for(DetailEnchere d : liste ){
-                System.out.println("Eto "+d.getIdEnchere());
-            }
-            data.put("data", detailRepository.getDetailEnchereById(idenchere));
+            V_Enchere enchere = v_enchereRepository.getEnchere(idenchere);
+            List <ImageEnchere> images = imageEnchereRepository.getAll(idenchere);
+            data.put("enchere", enchere);
+            data.put("images",images);
             return data;
         }
         catch(Exception e){
             throw new RessourceException(new ErrorRetour("Veuillez vérifier les informations", HttpStatus.BAD_REQUEST.value()));
         }
     }
-    /*
-     @GetMapping("/liste")
-    public @ResponseBody Map<String, Object> getAllEnchereVendu(){
-        try{
-            Map<String, Object> data = new HashMap<String, Object>();
-            data.put("data", enchereVenduRepository.findAll());
-            return data; 
-        }
-        catch(Exception e){
-            throw new RessourceException(new ErrorRetour("Veuillez vérifier les informations", HttpStatus.BAD_REQUEST.value()));
-        }
-    }
-     */
+    
 }
