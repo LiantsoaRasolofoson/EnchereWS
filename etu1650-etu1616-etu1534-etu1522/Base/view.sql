@@ -22,13 +22,10 @@ CREATE OR REPLACE VIEW V_Enchere AS (
         Enchere.*, 
         Categorie.valeur as categorie, 
         Commission.taux, 
-        status(Enchere.idEnchere) as statusEnchere,
-        Utilisateur.nom as nomVendeur,
-        Utilisateur.prenom as prenomVendeur
+        status(Enchere.idEnchere) as statusEnchere
     FROM 
         Enchere JOIN Categorie ON Enchere.idCategorie = Categorie.idCategorie
         JOIN Commission ON Commission.idCommission = Enchere.idCommission
-        JOIN Utilisateur ON Utilisateur.idUtilisateur = Enchere.idUtilisateur
 );
 
 CREATE OR REPLACE VIEW V_Offre AS (
@@ -37,10 +34,9 @@ CREATE OR REPLACE VIEW V_Offre AS (
         V_Enchere.nom, 
         V_Enchere.descriptions, 
         V_Enchere.prixEnchere, 
+        V_Enchere.prixMin, 
         V_Enchere.categorie, 
-        V_Enchere.dateEnchere,
-        V_Enchere.nomVendeur,
-        V_Enchere.prenomVendeur,
+        V_Enchere.dateEnchere, 
         V_Utilisateur.nom as nomUser , 
         V_Utilisateur.prenom, 
         V_Utilisateur.email, 
@@ -57,21 +53,8 @@ CREATE OR REPLACE VIEW V_Rechargement AS (
     FROM Rechargement JOIN Compte ON Rechargement.idCompte = Compte.idCompte
 );
 
-CREATE OR REPLACE VIEW DetailEnchere AS(
-    SELECT 
-        V_Enchere.idEnchere,
-        V_Enchere.nom, 
-        V_Enchere.descriptions, 
-        V_Enchere.categorie, 
-        V_Enchere.prixEnchere, 
-        V_Enchere.dateEnchere,
-        V_Enchere.duree,
-        V_Enchere.taux,
-        V_Enchere.statusEnchere,
-        V_Enchere.nomVendeur,
-        V_Enchere.prenomVendeur,
-        ImageEnchere.idImageEnchere,
-        ImageEnchere.nomImage,
-        ImageEnchere.format
-    FROM ImageEnchere JOIN V_Enchere ON V_Enchere.idEnchere = ImageEnchere.idEnchere
+CREATE OR REPLACE VIEW V_Stat AS (
+   SELECT idCategorie, categorie, count(idCategorie) 
+    FROM V_Enchere WHERE idEnchere IN (SELECT idEnchere FROM EnchereVendu) GROUP BY idCategorie, categorie
 );
+
