@@ -57,25 +57,6 @@ CREATE OR REPLACE VIEW V_Rechargement AS (
     FROM Rechargement JOIN Compte ON Rechargement.idCompte = Compte.idCompte
 );
 
-CREATE OR REPLACE VIEW DetailEnchere AS(
-    SELECT 
-        V_Enchere.idEnchere,
-        V_Enchere.nom, 
-        V_Enchere.descriptions, 
-        V_Enchere.categorie, 
-        V_Enchere.prixEnchere, 
-        V_Enchere.dateEnchere,
-        V_Enchere.duree,
-        V_Enchere.taux,
-        V_Enchere.statusEnchere,
-        V_Enchere.nomVendeur,
-        V_Enchere.prenomVendeur,
-        ImageEnchere.idImageEnchere,
-        ImageEnchere.nomImage,
-        ImageEnchere.format
-    FROM ImageEnchere JOIN V_Enchere ON V_Enchere.idEnchere = ImageEnchere.idEnchere
-);
-
 CREATE OR REPLACE VIEW V_Stat AS (
    SELECT idCategorie, categorie, count(idCategorie) 
     FROM V_Enchere WHERE idEnchere IN (SELECT idEnchere FROM EnchereVendu) GROUP BY idCategorie, categorie
