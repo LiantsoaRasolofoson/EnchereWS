@@ -13,7 +13,7 @@ db.HistoriqueEnchere.insert(
         },
         "idOffre": 1,
         "idEnchere": 1,
-        "prixOffre": 150000.0,
+        "prixOffre": 120000.0,
         "dateOffre": "2023-01-18T11:03:02.075"
     }
 )

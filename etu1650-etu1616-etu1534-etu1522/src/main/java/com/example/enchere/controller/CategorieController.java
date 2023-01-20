@@ -54,12 +54,11 @@ public class CategorieController {
         }
     }
 
-    @PutMapping("{idCategorie}")
-    public @ResponseBody Map<String, Object> updateOffre(@PathVariable int idCategorie,@RequestBody Categorie c) {
-        Categorie updateCategorie = categorieRepository.findById(idCategorie).orElseThrow(() 
-            -> new RessourceException(new ErrorRetour("idCategorie : "+idCategorie+" n'existe pas",HttpStatus.NO_CONTENT.value()))
+    @PutMapping("/updateCategorie")
+    public @ResponseBody Map<String, Object> updateOffre(@RequestBody Categorie c) {
+        Categorie updateCategorie = categorieRepository.findById(c.getIdCategorie()).orElseThrow(() 
+            -> new RessourceException(new ErrorRetour("idCategorie : "+c.getIdCategorie()+" n'existe pas",HttpStatus.NO_CONTENT.value()))
         );
-        //idcategorie |    valeur
         updateCategorie.setValeur(c.getValeur());
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("data", categorieRepository.save(updateCategorie));
@@ -68,12 +67,18 @@ public class CategorieController {
 
     @DeleteMapping("{idCategorie}")
     public @ResponseBody Map<String, Object> deleteOffre(@PathVariable int idCategorie)throws Exception{
-        Categorie categorie = categorieRepository.findById(idCategorie).orElseThrow(() 
-            -> new RessourceException(new ErrorRetour("idOffre : "+idCategorie+" n'existe pas",HttpStatus.NOT_FOUND.value()))
-        );
-        categorieRepository.delete(categorie);
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put("data", new SuccessRetour(" l'idCategorie  "+idCategorie+" a été supprimé avec succès"));
-        return data;
+        
+        try{
+            Categorie categorie = categorieRepository.findById(idCategorie).orElseThrow(() 
+                -> new RessourceException(new ErrorRetour("idCategorie : "+idCategorie+" n'existe pas",HttpStatus.NOT_FOUND.value()))
+            );
+            categorieRepository.delete(categorie);
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("data", new SuccessRetour(" l'idCategorie  "+idCategorie+" a été supprimé avec succès"));
+            return data;
+        }
+        catch(Exception e){
+            throw new RessourceException(new ErrorRetour("Error "+e.getMessage(),HttpStatus.NOT_FOUND.value()));
+        }
     }
 }
