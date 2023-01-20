@@ -75,6 +75,23 @@ public class V_RechargementController {
         }
     }
 
+    @GetMapping("/listeValide")
+    public @ResponseBody Map<String, Object> valides() {
+        try{
+            Map<String, Object> data = new HashMap<String, Object>();
+            List<V_Rechargement> valide = v_rechargementRepository.nonValides();
+            if(valide.size() > 0) {
+                data.put("data", valide);
+            } else {
+                data.put("message", "Aucun rechargement validé");
+            }
+            return data;
+        }
+        catch(Exception e){
+            throw new RessourceException(new ErrorRetour("Veuillez vérifier les informations",HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
     @PutMapping("validationRechargement")
     public @ResponseBody Map<String, Object> confirmeRechargement(@RequestParam("idRechargement") int idRechargement) {
         try{
