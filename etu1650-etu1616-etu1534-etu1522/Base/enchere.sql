@@ -2,18 +2,6 @@ create database enchere;
 create user enchere with password 'enchere';
 alter database enchere owner to enchere;
 
---creation table
-
-CREATE TABLE Token(
-  idToken SERIAL NOT NULL,
-  idUtilisateur int4,
-  tokenValues varchar(255),
-  dateExpiration timestamp
-);
-
-ALTER TABLE Token ADD FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur(idUtilisateur);
-
-
 CREATE TABLE Genre (
   idGenre SERIAL NOT NULL, 
   valeur  varchar(255) NOT NULL,
@@ -32,6 +20,15 @@ CREATE TABLE Utilisateur (
   dateDeNaissance date not null,
   PRIMARY KEY (idUtilisateur)
 );
+
+CREATE TABLE Token(
+  idToken SERIAL NOT NULL,
+  idUtilisateur int4,
+  tokenValues varchar(255),
+  dateExpiration timestamp,
+  PRIMARY KEY (idToken)
+);
+ALTER TABLE Token ADD FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur(idUtilisateur);
 
 CREATE TABLE Compte (
   idCompte      SERIAL NOT NULL, 
@@ -124,3 +121,12 @@ ALTER TABLE Enchere ADD FOREIGN KEY (idCommission) REFERENCES Commission (idComm
 ALTER TABLE EnchereVendu ADD FOREIGN KEY (idEnchere) REFERENCES Enchere (idEnchere);
 ALTER TABLE EnchereVendu ADD FOREIGN KEY (idOffre) REFERENCES Offre (idOffre);
 ALTER TABLE ImageEnchere ADD FOREIGN KEY (idEnchere) REFERENCES Enchere (idEnchere);
+
+
+CREATE TABLE Notifications(
+  idNotifications SERIAL PRIMARY KEY,
+  idUtilisateur INT4 NOT NULL,
+  notifications varchar(255) NOT NULL,
+  etat INT4 default 0
+);
+ALTER TABLE Notifications ADD FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur(idUtilisateur);
